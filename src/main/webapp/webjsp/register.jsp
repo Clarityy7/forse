@@ -9,11 +9,11 @@
 <body>
 <div align="center">
    <h2>회원가입</h2> <hr>
-   <form action="/posteat/register.do" form="post">
+   <form action="${pageContext.request.contextPath}/posteat/register.do" method="post">
       <!-- 아이디(중복확인 버튼 중복아니면 버튼 활성화), 비밀번호, 비밀번호 확인(둘이 동일하지 않으면 좌측에 텍스트 나오고 완료 버튼 비활성화), 닉네임, 회원가입 버튼  -->
       
          <label for="id">아이디:</label>
-         <input type="text" name="id" required> 
+         <input type="text" name="id" value="${param.id}" required> 
          
          <input type="button" name="idCheck" value="중복확인"><p>
          
@@ -21,10 +21,10 @@
          <input type="password" name="password" required> <p>
          
          <label for="confirmPassword">비밀번호 확인:</label>
-         <input type="confirmpassword" name="confirmpassword"> <p>
+         <input type="password" name="confirmpassword"> <p>
          
          <label for="nickname">닉네임:</label>
-		 <input type="text" name="nickname" required> <p>
+		 <input type="text" name="nickname" value="${param.nickname}" required> <p>
 		 
          <!-- 그냥 넣어봄 기능은 시간남으면 구현 -->
 		<label>성별:</label>

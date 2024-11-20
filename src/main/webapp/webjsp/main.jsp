@@ -16,8 +16,8 @@
     <main>
         <h2>환영합니다! POST EAT 서비스입니다.</h2>
         <p>로그인을 하시면 더 많은 기능을 이용하실 수 있습니다.</p>
-        <p><a href="/forse/webjsp/register.jsp">회원가입</a>     
-        <a href="/forse/webjsp/login.jsp">로그인</a></p>
+        <p><a href="${pageContext.request.contextPath}/posteat/register.do">회원가입</a>     
+        <a href="${pageContext.request.contextPath}/posteat/login.do">로그인</a></p>
     </main>
    <hr>
    <form action="searchRecipe" method="get">
@@ -34,12 +34,11 @@
 <!--  로그인 한 상태  -->
 <c:if test="${! empty sessionScope.user}">
 <div align="center">
-   <header><h2>POST EAT</h2> </header> 
+   <header><h2>POST EAT</h2> </header> <hr>
     <main>
-        <h2>환영합니다, ${sessionScope.user.name}님!</h2>
-        <p><a href="profile.jsp">프로필 보기</a></p>
-        <!-- 바꾸기 -->
-        <p><a href="userController?action=logout">로그아웃</a></p>
+        <h2>환영합니다, ${sessionScope.user.nickname}님!</h2>
+        <a href="${pageContext.request.contextPath}/posteat/profile.do">프로필 보기</a>
+        <a href="${pageContext.request.contextPath}/posteat/logout.do">로그아웃</a>
     </main>
    <hr>
    <form action="searchRecipe" method="get">
