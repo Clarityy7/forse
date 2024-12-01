@@ -21,7 +21,7 @@
     </main>
    <hr>
    <form action="searchRecipe" method="get">
-      <a href="viewRecipes.jsp">레시피 보러 가기</a><p>
+      <a href="${pageContext.request.contextPath}/recipe/list.do">레시피 보러 가기</a><p>
       <!--  검색은 아직 -->
       레시피 검색: <input type="search" name="search_query" placeholder="검색할 내용을 입력">
       <button type="submit">검색</button>
@@ -41,8 +41,8 @@
         <a href="${pageContext.request.contextPath}/posteat/logout.do">로그아웃</a>
     </main>
    <hr>
-   <form action="searchRecipe" method="get">
-      <a href="viewRecipes.jsp">레시피 보러 가기</a><p>
+   <form action="${pageContext.request.contextPath}/recipe/list.do" method="get">
+      <a href="${pageContext.request.contextPath}/recipe/list.do">레시피 보러 가기</a><p>
       <!--  검색은 아직 -->
       레시피 검색: <input type="search" name="search_query" placeholder="검색할 내용을 입력">
       <button type="submit">검색</button>

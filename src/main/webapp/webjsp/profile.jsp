@@ -30,8 +30,8 @@
         <tbody>
             <c:forEach var="recipe" items="${recipes}">
                 <tr>
-                    <td><a href="recipeController?action=view&recipeID=${recipe.recipeID}">${recipe.title}</a></td>
-                    <td>${recipe.date}</td>
+                    <td><a href="${pageContext.request.contextPath}/recipe/view.do?recipeID=${recipe.recipeID}">${recipe.title}</a></td>
+                    <td>${recipe.regdate}</td>
                 </tr>
             </c:forEach>
         </tbody>

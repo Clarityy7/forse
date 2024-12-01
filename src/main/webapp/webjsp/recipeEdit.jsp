@@ -7,16 +7,20 @@
 <title>Insert title here</title>
 </head>
 <body>
-<form action="${pageContext.request.contextPath}/recipe/insert.do" method="post">
+<form action="${pageContext.request.contextPath}/recipe/update.do" method="post">
       <fieldset>
-        <legend><h2>레시피 작성</h2></legend> <hr>
-        <div class="">
+        <legend><h2>레시피 수정</h2></legend> <hr>
+        
+        <!-- 레시피 ID 전달 -->
+        <input type="hidden" name="recipeID" value="${recipe.recipeID}" />
+        
+        <!-- 제목 -->
+        <div class="form-control">
           <label for="title">레시피 이름: </label>
-          <input type="text" id="title" name="title" placeholder="이름 입력" required value="${param.title}" />
+          <input type="text" id="title" name="title" placeholder="이름 입력" required value="${recipe.title}" />
         </div>
 
-      <!-- 분류 체크박스로? 한식, 일식, 양식 등 (구현 X 시간 남으면 나중에)  -->
-
+		<!-- 내용 -->
         <div class="form-control">
           <label for="description">레시피 내용 : </label> <p>
           <textarea
@@ -26,12 +30,13 @@
             rows="10"
             placeholder="레시피 내용을 입력하세요"
             required
-          >${param.description}</textarea>
+          >${recipe.description}</textarea>
         </div>
+        
+        <!-- 버튼 -->
         <input type="submit" value="등록" class="submit-btn" />
-        <input type="submit" value="취소" class="submit-btn" />
+        <a href="${pageContext.request.contextPath}/recipe/view.do?recipeID=${recipe.recipeID}" class="submit-btn">취소</a>
       </fieldset>
 </form>
-</div>
 </body>
 </html>

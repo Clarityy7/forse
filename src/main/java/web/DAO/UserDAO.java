@@ -1,4 +1,4 @@
-package web;
+package web.DAO;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+
+import web.DTO.User;
 
 
 public class UserDAO {

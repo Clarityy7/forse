@@ -1,4 +1,6 @@
-package web;
+package web.DTO;
+
+import java.time.LocalDateTime;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -6,8 +8,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Recipe {
-	private String recipeID;
+	private int recipeID;
 	private String title;
 	private String description;
 	private String imagePath;
+	private String userID;
+	private LocalDateTime regdate;
 }

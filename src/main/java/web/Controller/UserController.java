@@ -1,4 +1,4 @@
-package web;
+package web.Controller;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -7,15 +7,17 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import web.DAO.UserDAO;
+import web.DTO.Recipe;
+import web.DTO.User;
+import web.Service.RecipeService;
+import web.Service.UserService;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 
-/*
- * 작성자: 박준형
- * 작성일: 2024-11-21
- */
 
 /**
  * Servlet implementation class webController
@@ -25,11 +27,13 @@ public class UserController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
 	UserDAO dao;
+	UserService userService;
     /**
      * @see HttpServlet#HttpServlet()
      */
     public UserController() {
         dao = new UserDAO();
+        userService = new UserService();
         // TODO Auto-generated constructor stub
     }
 
@@ -80,6 +84,15 @@ public class UserController extends HttpServlet {
 	        // 프로필 보기
 	        HttpSession session = request.getSession(false);
 	        if(session != null && session.getAttribute("user") != null) {
+	        	User user = (User) session.getAttribute("user");
+
+	            // 사용자가 작성한 레시피 가져오기
+	            RecipeService recipeService = new RecipeService();
+	            List<Recipe> recipes = recipeService.getRecipesByUserId(user.getId());
+
+	            // 레시피를 request에 설정
+	            request.setAttribute("recipes", recipes);
+	            
 	            forwardReq(request, response, "/webjsp/profile.jsp");
 	        } else {
 	            response.sendRedirect(request.getContextPath() + "/posteat/login.do");
@@ -101,52 +114,22 @@ public class UserController extends HttpServlet {
 	}
 
 	
-	protected void processLogin(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		String id = req.getParameter("id");
-		String password = req.getParameter("password");
-		HashMap<String, Boolean> errors = new HashMap<>();
-		req.setAttribute("errors", errors);
-		
-		System.out.println("입력된 아이디:" + id);
-		System.out.println("입력된 비밀번호:" + password);
-		
-		if(id == null || id.isEmpty())
-			errors.put("id", true);
-		if(password == null || password.isEmpty())
-			errors.put("password", true);
-		
-		if(!errors.isEmpty()){
-			forwardReq(req, res, "/webjsp/login.jsp");
-			return;
-		}
-		
-		User user = dao.findById(id);
-		
-		if(user == null) {
-	        System.out.println("DB에서 데이터를 찾을 수 없음");
-	        errors.put("mismatch", true);
-	        forwardReq(req, res, "/webjsp/login.jsp");
-	        return;
-	    }
-		
-		System.out.println("db 아이디:" + user.getId());
-		System.out.println("db 비밀번호:" + user.getPassword());
-		
-		if(!password.equals(user.getPassword())) {
-			errors.put("mismatch", true);
-			forwardReq(req, res, "/webjsp/login.jsp");
-			return;
-		}
-		
-		req.getSession().setAttribute("user", user);
-		res.sendRedirect(req.getContextPath() + "/posteat/main.do");
+	protected void processLogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String id = request.getParameter("id");
+        String password = request.getParameter("password");
+        HttpSession session = request.getSession();
+
+        HashMap<String, String> errors = userService.processLogin(id, password, session);
+
+        if (!errors.isEmpty()) {
+            request.setAttribute("errors", errors);
+            forwardReq(request, response, "/webjsp/login.jsp");
+        } else {
+            response.sendRedirect(request.getContextPath() + "/posteat/main.do");
+        }
 	}
 	
 	protected void processRegister(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// 에러 메시지를 저장할 맵
-		HashMap<String, String> errors = new HashMap<>();
-		request.setAttribute("errors", errors);
-
 		 // 폼에서 전달된 파라미터 추출
 		String id = request.getParameter("id");
 		String password = request.getParameter("password");
@@ -158,43 +141,17 @@ public class UserController extends HttpServlet {
 	    System.out.println("입력된 비밀번호확인:" + confirmpassword);
 	    System.out.println("입력된 닉네임:" + nickname);
 	    
-	    // 유효성 검사
-	    if (id == null || id.isEmpty()) {
-	        errors.put("id", "아이디를 입력해주세요.");
-	    } else if (dao.findById(id) != null) {
-	        errors.put("id", "이미 존재하는 아이디입니다.");
-	    }
-	    
-	    if (password == null || password.isEmpty()) {
-	        errors.put("password", "비밀번호를 입력해주세요.");
-	    } else if (!password.equals(confirmpassword)) {
-	        errors.put("confirmpassword", "비밀번호가 일치하지 않습니다.");
-	    }
-	    
-	    if (nickname == null || nickname.isEmpty()) {
-	        errors.put("nickname", "닉네임을 입력해주세요.");
-	    }
-	    
-	 // 에러가 있다면 회원가입 페이지로 돌아감
-	    if (!errors.isEmpty()) {
-	        forwardReq(request, response, "/register.jsp");
-	        return;
-	    }
-	    
-	 // 사용자 등록
-	    User user = new User();
-	    user.setId(id);
-	    user.setPassword(password); // 실제로는 비밀번호를 해싱하여 저장해야 합니다.
-	    user.setNickname(nickname);
-	    user.setRegdate(LocalDateTime.now());
+	    HashMap<String, String> errors = userService.processRegister(id, password, confirmpassword, nickname);
 
-	    dao.addUser(user);
-
-	    // 회원가입 성공 메시지를 세션 또는 리퀘스트에 저장할 수 있습니다.
-	    request.getSession().setAttribute("message", "회원가입이 성공적으로 완료되었습니다.");
-
-	    response.sendRedirect(request.getContextPath() + "/posteat/main.do");
+        if (!errors.isEmpty()) {
+            request.setAttribute("errors", errors);
+            forwardReq(request, response, "/webjsp/register.jsp");
+        } else {
+            request.getSession().setAttribute("message", "회원가입이 성공적으로 완료되었습니다.");
+            response.sendRedirect(request.getContextPath() + "/posteat/main.do");
+        }
 	}
+	
 	protected void processModify(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	    HttpSession session = request.getSession(false);
 	    if(session == null || session.getAttribute("user") == null) {
@@ -207,37 +164,16 @@ public class UserController extends HttpServlet {
 	    String password = request.getParameter("password");
 	    String confirmPassword = request.getParameter("confirmPassword");
 	    
-	    HashMap<String, String> errors = new HashMap<>();
-	    request.setAttribute("errors", errors);
-	    
-	    if(nickname == null || nickname.isEmpty()) {
-	        errors.put("nickname", "닉네임을 입력해주세요.");
-	    }
-	    
-	    if(password != null && !password.isEmpty()) {
-	        if(!password.equals(confirmPassword)) {
-	            errors.put("password", "비밀번호가 일치하지 않습니다.");
-	        }
-	    }
-	    
-	    if(!errors.isEmpty()) {
-	        forwardReq(request, response, "/modify.jsp");
-	        return;
-	    }
-	    
-	    // 사용자 정보 업데이트
-	    currentUser.setNickname(nickname);
-	    if(password != null && !password.isEmpty()) {
-	        currentUser.setPassword(password); // 실제로는 해싱 필요
-	    }
-	    
-	    // 데이터베이스 업데이트
-	    dao.updateUser(currentUser);
-	    
-	    // 세션 정보 업데이트
-	    session.setAttribute("user", currentUser);
-	    
-	    response.sendRedirect(request.getContextPath() + "/posteat/profile.do");
+	    HashMap<String, String> errors = userService.processModify(currentUser, nickname, password, confirmPassword);
+
+        if (!errors.isEmpty()) {
+            request.setAttribute("errors", errors);
+            forwardReq(request, response, "/webjsp/modify.jsp");
+        } else {
+            // 세션 정보 업데이트
+            session.setAttribute("user", currentUser);
+            response.sendRedirect(request.getContextPath() + "/posteat/profile.do");
+        }
 	}
 	
 }
