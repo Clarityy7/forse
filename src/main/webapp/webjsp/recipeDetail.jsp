@@ -26,7 +26,7 @@
 	<c:forEach var="comment" items="${comments}">
     	<div>
         	<p><strong>${comment.userID}</strong>: ${comment.content}</p>
-        	<p><fmt:formatDate value="${comment.regdate}" pattern="yyyy-MM-dd HH:mm:ss" /></p>
+        	<p>${comment.regdate}</p>
     	</div>
 	</c:forEach>
 
