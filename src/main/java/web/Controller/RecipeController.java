@@ -8,9 +8,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import web.DAO.RecipeDAO;
+import web.DTO.Comment;
 import web.DTO.Recipe;
 import web.DTO.User;
+import web.Service.CommentService;
 import web.Service.RecipeService;
+import web.Service.RecommendationService;
 
 import java.time.LocalDateTime;
 import java.io.IOException;
@@ -27,6 +30,8 @@ public class RecipeController extends HttpServlet {
 	
 	RecipeDAO recipeDAO;
 	RecipeService recipeService;
+	CommentService commentService;
+	RecommendationService recommendationService;
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -34,6 +39,8 @@ public class RecipeController extends HttpServlet {
     public RecipeController() {
     	 recipeDAO = new RecipeDAO();
     	 recipeService = new RecipeService();
+    	 commentService = new CommentService();
+    	 recommendationService = new RecommendationService();
     }
 
 	/**
@@ -79,6 +86,9 @@ public class RecipeController extends HttpServlet {
 	        } else if (action.equals("/view.do")) {
 	        	// 레시피 디테일 보기 
 	        	showRecipeDetail(request, response);
+	        } else if (action.equals("/recommend.do")) {
+	        	// 레시피 추천 처리
+	        	recommendRecipe(request, response);
 	        }
 	}
 	
@@ -216,11 +226,50 @@ public class RecipeController extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/recipe/list.do"); // 레시피가 없으면 목록으로
             return;
         }
-
+        
+        List<Comment> comments = commentService.getCommentsByRecipeID(recipeID);
+        int recommendationCount = recommendationService.getRecommendationCount(recipeID);
+        
         request.setAttribute("recipe", recipe);
-
-        // JSP로 포워딩
+        request.setAttribute("comments", comments);
+        request.setAttribute("recommendationCount", recommendationCount);
+        
+        // 세션에서 에러 메시지 가져오기
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            String error = (String) session.getAttribute("error");
+            if (error != null) {
+                request.setAttribute("error", error);
+                session.removeAttribute("error");
+            }
+        }
+        
         forwardReq(request, response, "/webjsp/recipeDetail.jsp");
     }
 
+    // 추천 처리 메서드 
+    private void recommendRecipe(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            response.sendRedirect(request.getContextPath() + "/posteat/login.do");
+            return;
+        }
+
+        User user = (User) session.getAttribute("user");
+        int recipeID;
+        try {
+            recipeID = Integer.parseInt(request.getParameter("recipeID"));
+        } catch (NumberFormatException e) {
+            response.sendRedirect(request.getContextPath() + "/recipe/list.do");
+            return;
+        }
+        
+        boolean success = recommendationService.addRecommendation(recipeID, user.getId());
+        if (!success) {
+            // 이미 추천한 경우 메시지 표시
+            request.setAttribute("error", "이미 추천하셨습니다.");
+        }
+
+        response.sendRedirect(request.getContextPath() + "/recipe/view.do?recipeID=" + recipeID);
+    }
 }

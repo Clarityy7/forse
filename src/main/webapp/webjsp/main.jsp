@@ -27,7 +27,7 @@
       <button type="submit">검색</button>
    </form>
    <!-- 추천도 아직 -->
-   <p><a href="recommendRecipe.jsp">레시피 추천받기</a></p>
+   <p><a href="recommendRecipe.jsp">레시피 추천받기(미구현)</a></p>
 </div>
 </c:if>
 
@@ -48,7 +48,7 @@
       <button type="submit">검색</button>
    </form>
    <!-- 추천도 아직 -->
-   <p><a href="recommendRecipe.jsp">레시피 추천받기</a></p>
+   <p><a href="recommendRecipe.jsp">레시피 추천받기(미구현)</a></p>
 </div>
 </c:if>
 

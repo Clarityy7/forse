@@ -4,56 +4,57 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import web.DTO.Comment;
+import web.Util.DatabaseUtil;
 
 public class CommentDAO {
     private Connection conn;
     private PreparedStatement pstmt;
 
-    // DB 연결
-    private void connect() {
-        try {
-            conn = DriverManager.getConnection("jdbc:mysql://localhost/spring4fs", "spring4", "spring4");
-        } catch (Exception e) {
-            e.printStackTrace();
+    // disconnect 
+    void disconnect(PreparedStatement pstmt, Connection conn) {
+        if (pstmt != null) {
+            try {
+                pstmt.close();
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+        if (conn != null) {
+            try {
+                conn.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
-
-    // DB 연결 해제
-    private void disconnect() {
-        try {
-            if (pstmt != null) pstmt.close();
-            if (conn != null) conn.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    // 댓글 추가
+    
+    // 댓글 추가 메서드
     public void addComment(Comment comment) {
-        connect();
-        String sql = "INSERT INTO comment (recipeID, userID, content) VALUES (?, ?, ?)";
-        try {
-            pstmt = conn.prepareStatement(sql);
+        String sql = "INSERT INTO comment (recipeID, userID, content, regdate) VALUES (?, ?, ?, ?)";
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
             pstmt.setInt(1, comment.getRecipeID());
             pstmt.setString(2, comment.getUserID());
             pstmt.setString(3, comment.getContent());
+            pstmt.setTimestamp(4, Timestamp.valueOf(comment.getRegdate()));
             pstmt.executeUpdate();
-        } catch (Exception e) {
+
+        } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            disconnect();
         }
     }
 
-    // 댓글 조회
+    // 특정 레시피의 댓글 목록 가져오기
     public List<Comment> getCommentsByRecipeID(int recipeID) {
-        connect();
         List<Comment> comments = new ArrayList<>();
-        String sql = "SELECT * FROM comment WHERE recipeID = ? ORDER BY regdate DESC";
-        try {
-            pstmt = conn.prepareStatement(sql);
+        String sql = "SELECT * FROM comment WHERE recipeID = ? ORDER BY regdate ASC";
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
             pstmt.setInt(1, recipeID);
             ResultSet rs = pstmt.executeQuery();
+
             while (rs.next()) {
                 Comment comment = new Comment();
                 comment.setCommentID(rs.getInt("commentID"));
@@ -63,26 +64,53 @@ public class CommentDAO {
                 comment.setRegdate(rs.getTimestamp("regdate").toLocalDateTime());
                 comments.add(comment);
             }
-        } catch (Exception e) {
+            rs.close();
+
+        } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            disconnect();
         }
         return comments;
     }
 
-    // 댓글 삭제
+    // 댓글 삭제 메서드
     public void deleteComment(int commentID) {
-        connect();
         String sql = "DELETE FROM comment WHERE commentID = ?";
-        try {
-            pstmt = conn.prepareStatement(sql);
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
             pstmt.setInt(1, commentID);
             pstmt.executeUpdate();
-        } catch (Exception e) {
+
+        } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            disconnect();
         }
     }
+    
+    // 특정 댓글 
+    public Comment getCommentById(int commentID) {
+        String sql = "SELECT * FROM comment WHERE commentID = ?";
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, commentID);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                Comment comment = new Comment();
+                comment.setCommentID(rs.getInt("commentID"));
+                comment.setRecipeID(rs.getInt("recipeID"));
+                comment.setUserID(rs.getString("userID"));
+                comment.setContent(rs.getString("content"));
+                comment.setRegdate(rs.getTimestamp("regdate").toLocalDateTime());
+                return comment;
+            }
+            rs.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    
 }

@@ -29,4 +29,14 @@
     <servlet-name>RecipeController</servlet-name>
     <url-pattern>/RecipeController</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>CommentController</display-name>
+    <servlet-name>CommentController</servlet-name>
+    <servlet-class>web.Controller.CommentController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CommentController</servlet-name>
+    <url-pattern>/CommentController</url-pattern>
+  </servlet-mapping>
 </web-app>

@@ -8,7 +8,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-<!-- forEach 사용해서 데베에 있는 레시피 전부 출력 적당한 개수로 페이지 나눌 것  -->
 <div align="center">
     <h2>레시피 목록</h2> <hr>
     <p><a href="${pageContext.request.contextPath}/posteat/main.do">메인 화면으로</a></p>
@@ -30,7 +29,7 @@
                         <td>${recipe.recipeID}</td>
                         <td><a href="${pageContext.request.contextPath}/recipe/view.do?recipeID=${recipe.recipeID}">${recipe.title}</a></td>
                         <td>${recipe.userID}</td>
-                        <td>등록날짜 넣기</td>
+                        <td>${recipe.regdate}</td>
                     </tr>
                 </c:forEach>
             </tbody>

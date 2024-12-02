@@ -55,7 +55,7 @@ public class UserController extends HttpServlet {
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/html;charset=utf-8");
 		String action = request.getPathInfo();
-		System.out.println("action: " + action);
+		System.out.println("UserController action: " + action);
 		// 메인
 		if (action == null || action.equals("/main.do")) {
 			System.out.println("action: " + action);
