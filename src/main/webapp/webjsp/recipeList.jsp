@@ -6,6 +6,36 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/webcss/style.css">
+<style>
+        /* 레시피 테이블 스타일 */
+        .recipe-table {
+            margin: 20px auto; /* 테이블을 가운데 정렬 */
+            border-collapse: collapse; /* 테이블 경계선 병합 */
+            width: 80%; /* 테이블 너비 */
+            max-width: 600px; /* 최대 너비 */
+            text-align: center; /* 텍스트 가운데 정렬 */
+        }
+
+        .recipe-table th, .recipe-table td {
+            border: 1px solid #ddd; /* 셀 경계선 */
+            padding: 8px; /* 셀 여백 */
+        }
+
+        .recipe-table th {
+            background-color: #FF8C00; /* 주황색 배경 */
+            color: white; /* 흰색 텍스트 */
+        }
+
+        .recipe-table td a {
+            color: #FF8C00; /* 링크 색상 */
+            text-decoration: none;
+        }
+
+        .recipe-table td a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
 <div align="center">
@@ -13,8 +43,9 @@
     <p><a href="${pageContext.request.contextPath}/posteat/main.do">메인 화면으로</a></p>
    	<c:if test="${not empty user}">
         <p><a href="${pageContext.request.contextPath}/recipe/add.do">레시피 작성</a></p>
-    </c:if>
-    <table border="1" cellpadding="5" cellspacing="0">
+    </c:if>-
+    <!--  레시피 테이블 -->
+    <table class="recipe-table">
             <thead>
                 <tr>
                     <th>번호</th>

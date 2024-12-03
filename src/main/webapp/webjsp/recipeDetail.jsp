@@ -6,10 +6,11 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/webcss/style.css">
 </head>
 <body>
 <!-- 레시피 상세 정보 표시 -->
-<div align="center">
+<%--<div align="center">
     <h2>${recipe.title} 레시피</h2> <hr>
     <p><a href="${pageContext.request.contextPath}/recipe/list.do">레시피 목록으로</a></p>
     <p>작성자: ${recipe.userID}</p>
@@ -59,6 +60,33 @@
         	<button type="submit">댓글 작성</button>
     	</form>
 	</c:if>
+</div> --%>
+<div class="container">
+    <h2>${recipe.title} 레시피</h2>
+    <img src="${recipe.imagePath}" alt="${recipe.title}" style="width:100%;max-width:300px;">
+    <p>${recipe.description}</p>
+    <p>작성자: ${recipe.userID}</p>
+    <p>등록일: ${recipe.regdate}</p>
+
+    <form action="${pageContext.request.contextPath}/recipe/recommend.do" method="post">
+        <input type="hidden" name="recipeID" value="${recipe.recipeID}">
+        <button type="submit">❤️</button>
+    </form>
+    <p>추천 수: ${recommendationCount}</p>
+
+    <h3>댓글</h3>
+    <c:forEach var="comment" items="${comments}">
+        <p>${comment.userID}: ${comment.content}</p>
+    </c:forEach>
+
+    <c:if test="${!empty sessionScope.user}">
+        <form action="${pageContext.request.contextPath}/comment/add.do" method="post">
+            <textarea name="content" required></textarea>
+            <button type="submit">댓글 등록</button>
+        </form>
+    </c:if>
+    <!-- 뒤로 돌아가기 버튼 -->
+    <button onclick="history.back()">이전화면으로</button>
 </div>
 </body>
 </html>

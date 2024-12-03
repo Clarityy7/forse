@@ -6,9 +6,10 @@
 <head>
 <meta charset="UTF-8">
 <title>로그인 화면</title>
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/webcss/style.css">
 </head>
 <body>
-<div align="center">
+<%-- <div align="center">
    <h2>로그인</h2> <hr> 
    <form action="${pageContext.request.contextPath}/posteat/login.do" method="post">
    	   <c:if test="${errors.mismatch}"><p style="color: red;">암호가 일치하지 않습니다.</p></c:if> <p>	
@@ -26,6 +27,20 @@
 	   <p>비밀번호가 기억이 나지 않으신가요? <a href="register.jsp">비밀번호 찾기</a></p>
 	   <p>아직 계정이 없으신가요? <a href="${pageContext.request.contextPath}/posteat/register.do">회원가입</a></p>
    </form>
+</div>--%>
+<div class="container">
+    <h2>로그인</h2>
+    <form action="${pageContext.request.contextPath}/posteat/login.do" method="post">
+        <label for="id">아이디</label>
+        <input type="text" id="id" name="id" required>
+
+        <label for="password">비밀번호</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit">로그인</button>
+    </form>
+    <p>아직 계정이 없으신가요? <a href="${pageContext.request.contextPath}/posteat/register.do">회원가입</a></p>
 </div>
 </body>
 </html>
+

@@ -100,4 +100,11 @@ public class RecipeService {
     public int getTotalRecipeCount() {
         return dao.getRecipeCount();
     }
+    
+    //추가!!! 모든 레시피를 가져오는 메서드
+    public List<Recipe> getAllRecipes() {
+        return dao.getAllRecipes(); // DAO에서 모든 레시피 가져오기
+    }
+
+
 }

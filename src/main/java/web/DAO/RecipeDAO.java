@@ -3,6 +3,7 @@ package web.DAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -198,4 +199,34 @@ public class RecipeDAO {
             disconnect(pstmt, conn);
         }
     }
+    
+    //추가!! 모든 레시피를 조회하는 sql 쿼리 작성
+    public List<Recipe> getAllRecipes() {
+        List<Recipe> recipes = new ArrayList<>();
+        String sql = "SELECT * FROM recipe ORDER BY regdate DESC"; // 최신 순 정렬
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                Recipe recipe = new Recipe();
+                recipe.setRecipeID(rs.getInt("recipeID"));
+                recipe.setTitle(rs.getString("title"));
+                recipe.setDescription(rs.getString("description"));
+                recipe.setImagePath(rs.getString("imagePath"));
+                recipe.setUserID(rs.getString("userID"));
+                recipe.setRegdate(rs.getTimestamp("regdate").toLocalDateTime());
+                recipes.add(recipe);
+            }
+            rs.close();
+            System.out.println("DAO에서 가져온 레시피 개수: " + recipes.size()); // 디버깅
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return recipes;
+    }
+
+
+
+
 }

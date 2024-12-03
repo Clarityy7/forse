@@ -6,6 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <title>프로필 수정</title>
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/webcss/style.css">
 </head>
 <body>
 <div align="center">

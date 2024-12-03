@@ -5,9 +5,10 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/webcss/style.css">
 </head>
 <body>
-<div align="center">
+<%--<div align="center">
    <h2>회원가입</h2> <hr>
    <form action="${pageContext.request.contextPath}/posteat/register.do" method="post">
       <!-- 아이디(중복확인 버튼 중복아니면 버튼 활성화), 비밀번호, 비밀번호 확인(둘이 동일하지 않으면 좌측에 텍스트 나오고 완료 버튼 비활성화), 닉네임, 회원가입 버튼  -->
@@ -38,6 +39,25 @@
          <button type="submit">회원가입</button>
          <input type="button" name="register" value="취소"><p>
    </form>
+</div> --%>
+<div class="container">
+    <h2>회원가입</h2>
+    <form action="${pageContext.request.contextPath}/posteat/register.do" method="post">
+        <label for="id">아이디</label>
+        <input type="text" id="id" name="id" required>
+
+        <label for="nickname">닉네임</label>
+        <input type="text" id="nickname" name="nickname" required>
+
+        <label for="password">비밀번호</label>
+        <input type="password" id="password" name="password" required>
+
+        <label for="confirmPassword">비밀번호 확인</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" required>
+
+        <button type="submit">회원가입</button>
+        <button type="button" onclick="location.href='${pageContext.request.contextPath}/posteat/main.do'">취소</button>
+    </form>
 </div>
 </body>
 </html>
