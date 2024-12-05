@@ -101,21 +101,4 @@ public class UserDAO {
         }
     }
 
-    
-    // 사용자 정보 삭제
-    public void deleteUser(User user) {
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-
-        String sql = "delete from user where id=? ";
-        try {
-            conn = DatabaseUtil.getConnection();
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, id);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            disconnect(pstmt, conn);
-        }
-    }
 }
