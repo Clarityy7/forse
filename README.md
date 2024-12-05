@@ -71,6 +71,7 @@ POSTEAT은 요리에 관심 있는 사용자들이 모여 레시피를 공유하
 - Apache Tomcat 10.1 설치
 - MySQL 설치 및 설정
 - Maven 설치 (필요한 경우)
+- Lombok 설치
 
 ### 프로젝트 클론
 
