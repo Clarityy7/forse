@@ -14,9 +14,14 @@ import web.DTO.User;
 import web.Service.CommentService;
 import web.Service.RecipeService;
 import web.Service.RecommendationService;
+import web.Util.DatabaseUtil;
 
 import java.time.LocalDateTime;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 
@@ -83,12 +88,16 @@ public class RecipeController extends HttpServlet {
 	        } else if (action.equals("/delete.do")) {
 	        	// 레시피 삭제 처리
 	        	deleteRecipe(request, response);
-	        } else if (action.equals("/view.do")) {
+	        } else if (action.equals("/recipeDetail.do")) {
 	        	// 레시피 디테일 보기 
 	        	showRecipeDetail(request, response);
 	        } else if (action.equals("/recommend.do")) {
 	        	// 레시피 추천 처리
 	        	recommendRecipe(request, response);
+	        }
+	        else if (action.equals("/view.do")) {
+	            // 레시피 상세 보기
+	            showRecipeDetail(request, response);
 	        }
 	}
 	
@@ -235,17 +244,56 @@ public class RecipeController extends HttpServlet {
         request.setAttribute("recommendationCount", recommendationCount);
         
         // 세션에서 에러 메시지 가져오기
-        HttpSession session = request.getSession(false);
+        /*HttpSession session = request.getSession(false);
         if (session != null) {
             String error = (String) session.getAttribute("error");
             if (error != null) {
                 request.setAttribute("error", error);
                 session.removeAttribute("error");
             }
-        }
+        }*/
         
         forwardReq(request, response, "/webjsp/recipeDetail.jsp");
     }
+
+    public Recipe getRecipeDetail(int recipeID) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        Recipe recipe = null;
+
+        String sql = "SELECT * FROM recipe WHERE recipeID = ?";
+        try {
+            conn = DatabaseUtil.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, recipeID);
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                recipe = new Recipe();
+                recipe.setRecipeID(rs.getInt("recipeID"));
+                recipe.setTitle(rs.getString("title"));
+                recipe.setDescription(rs.getString("description")); // 'description' 사용
+                recipe.setUserID(rs.getString("userID"));
+
+                // 날짜 변환
+                Timestamp timestamp = rs.getTimestamp("regdate");
+                if (timestamp != null) {
+                    recipe.setRegdate(timestamp.toLocalDateTime());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DatabaseUtil.close(rs, pstmt, conn);
+        }
+
+
+        return recipe;
+    }
+
+    
 
     // 추천 처리 메서드 
     private void recommendRecipe(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

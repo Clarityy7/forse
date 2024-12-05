@@ -57,10 +57,20 @@ public class UserController extends HttpServlet {
 		String action = request.getPathInfo();
 		System.out.println("UserController action: " + action);
 		// 메인
+		// main.do 처리 로직
 		if (action == null || action.equals("/main.do")) {
+		    // 레시피 데이터 가져오기
+		    RecipeService recipeService = new RecipeService();
+		    List<Recipe> recipes = recipeService.getRecipes(1, 5); // 최근 5개의 레시피 가져오기
+		    request.setAttribute("recipes", recipes);
+
+		    forwardReq(request, response, "/webjsp/main.jsp");
+		}
+
+		/*if (action == null || action.equals("/main.do")) {
 			System.out.println("action: " + action);
 			forwardReq(request, response, "/webjsp/main.jsp");
-		}// 회원가입
+		}*/// 회원가입
 		else if(action.equals("/register.do")) {
 			if (request.getMethod().equalsIgnoreCase("GET")) {
 	            forwardReq(request, response, "/webjsp/register.jsp");
@@ -71,9 +81,30 @@ public class UserController extends HttpServlet {
 		else if(action.equals("/login.do") && request.getMethod().equalsIgnoreCase("GET")) {
 	    	  forwardReq(request, response, "/webjsp/login.jsp"); 
 	    }// 로그인
-	    else if(action.equals("/login.do") && request.getMethod().equalsIgnoreCase("POST")) {
+		else if (action.equals("/login.do") && request.getMethod().equalsIgnoreCase("POST")) {
+		    String id = request.getParameter("id");
+		    String password = request.getParameter("password");
+
+		    User user = dao.findById(id);
+
+		    if (user == null || !user.getPassword().equals(password)) {
+		        // 로그인 실패: 아이디 또는 비밀번호가 틀렸을 경우
+		        HashMap<String, String> errors = new HashMap<>();
+		        errors.put("mismatch", "아이디 또는 비밀번호가 일치하지 않습니다.");
+		        request.setAttribute("errors", errors);
+		        forwardReq(request, response, "/webjsp/login.jsp");
+		    } else {
+		        // 로그인 성공
+		        HttpSession session = request.getSession();
+		        session.setAttribute("user", user);
+		        response.sendRedirect(request.getContextPath() + "/posteat/main.do");
+		    }
+		}
+
+		/*else if(action.equals("/login.do") && request.getMethod().equalsIgnoreCase("POST")) {
 	    	  processLogin(request, response);
-	    }// 로그아웃
+	    }*/
+		// 로그아웃
 	    else if(action.equals("/logout.do")) {
 	    	  HttpSession session = request.getSession(false);
 	    	  if(session != null)

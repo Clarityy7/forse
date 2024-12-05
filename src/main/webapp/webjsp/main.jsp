@@ -1,66 +1,3 @@
-<%-- <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/webcss/style.css">
-</head>
-<body>
-
-<!--  로그인 안한 상태 -->
-<c:if test="${empty sessionScope.user}">
-<div align="center">
-   <header><h2>POST EAT</h2> </header> 
-    <main>
-        <h2>환영합니다! POST EAT 서비스입니다.</h2>
-        <p>로그인을 하시면 더 많은 기능을 이용하실 수 있습니다.</p>
-        <p><a href="${pageContext.request.contextPath}/posteat/register.do">회원가입</a>     
-        <a href="${pageContext.request.contextPath}/posteat/login.do">로그인</a></p>
-    </main>
-   <hr>
-   <form action="searchRecipe" method="get">
-      <a href="${pageContext.request.contextPath}/recipe/list.do">레시피 보러 가기</a><p>
-      <!--  검색은 아직 -->
-      레시피 검색: <input type="search" name="search_query" placeholder="검색할 내용을 입력">
-      <button type="submit">검색</button>
-   </form>
-   <!-- 추천도 아직 -->
-   <p><a href="recommendRecipe.jsp">레시피 추천받기(미구현)</a></p>
-</div>
-</c:if>
-
-<!--  로그인 한 상태  -->
-<c:if test="${! empty sessionScope.user}">
-<div align="center">
-   <header><h2>POST EAT</h2> </header> <hr>
-    <main>
-        <h2>환영합니다, ${sessionScope.user.nickname}님!</h2>
-        <a href="${pageContext.request.contextPath}/posteat/profile.do">프로필 보기</a>
-        <a href="${pageContext.request.contextPath}/posteat/logout.do">로그아웃</a>
-    </main>
-   <hr>
-   <form action="${pageContext.request.contextPath}/recipe/list.do" method="get">
-      <a href="${pageContext.request.contextPath}/recipe/list.do">레시피 보러 가기</a><p>
-      <!--  검색은 아직 -->
-      레시피 검색: <input type="search" name="search_query" placeholder="검색할 내용을 입력">
-      <button type="submit">검색</button>
-   </form>
-   <!-- 추천도 아직 -->
-   <p><a href="recommendRecipe.jsp">레시피 추천받기(미구현)</a></p>
-</div>
-</c:if>
-
-<footer>
-        <p>&copy; 2024 POST EAT</p>
-</footer>
-
-</body>
-</html>--%>
-
-
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -68,41 +5,150 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>POST EAT 메인</title>	
-	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/webcss/style.css">
+    <title>POST EAT - 메인</title>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/webcss/style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        header {
+            background-color: #FF8C00;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            position: relative;
+        }
+
+        header .nav-buttons {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        header .nav-buttons button {
+            background-color: white;
+            color: #FF8C00;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        header .nav-buttons button:hover {
+            background-color: #e67e00;
+            color: white;
+        }
+
+        header .logout-button {
+            background-color: white;
+            color: #FF8C00;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        header .logout-button:hover {
+            background-color: #e67e00;
+            color: white;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .recipe-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .recipe-table th, .recipe-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .recipe-table th {
+            background-color: #FF8C00;
+            color: white;
+        }
+
+        .recipe-table td a {
+            text-decoration: none;
+            color: #FF8C00;
+        }
+
+        .recipe-table td a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
 <header>
     <h1>POST EAT</h1>
+    <div class="nav-buttons">
+        <!-- 레시피 작성 버튼 -->
+        <button onclick="location.href='${pageContext.request.contextPath}/recipe/add.do'">+</button>
+        <!-- 내 프로필 보기 버튼 -->
+        <button onclick="location.href='${pageContext.request.contextPath}/posteat/profile.do'">👤</button>
+        <!-- 로그아웃 버튼 (로그인 상태에서만 표시) -->
+        <c:if test="${!empty sessionScope.user}">
+            <button class="logout-button" onclick="location.href='${pageContext.request.contextPath}/posteat/logout.do'">🚪</button>
+        </c:if>
+    </div>
 </header>
 <div class="container">
-    <!-- 로그인 여부 확인 -->
-    <c:if test="${empty sessionScope.user}">
-        <p>환영합니다! POST EAT 서비스입니다.</p>
-        <div>
-            <button onclick="location.href='${pageContext.request.contextPath}/posteat/login.do'">로그인</button>
-            <button onclick="location.href='${pageContext.request.contextPath}/posteat/register.do'">회원가입</button>
-        </div>
+    <!-- 레시피 목록 -->
+    <c:if test="${empty recipes}">
+        <p>현재 표시할 레시피가 없습니다.</p>
     </c:if>
-
-    <c:if test="${!empty sessionScope.user}">
-        <p>안녕하세요, ${sessionScope.user.nickname}님!</p>
-        <div>
-            <button onclick="location.href='${pageContext.request.contextPath}/posteat/profile.do'">내 프로필 보기</button>
-            <button onclick="location.href='${pageContext.request.contextPath}/posteat/logout.do'">로그아웃</button>
-        </div>
+    <c:if test="${!empty recipes}">
+        <table class="recipe-table">
+            <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>제목</th>
+                    <th>작성자</th>
+                    <th>등록일</th>
+                </tr>
+            </thead>
+            <tbody>
+                <c:forEach var="recipe" items="${recipes}">
+                    <tr>
+                        <td>${recipe.recipeID}</td>
+                        <td><a href="${pageContext.request.contextPath}/recipe/view.do?recipeID=${recipe.recipeID}">${recipe.title}</a></td>
+                        <td>${recipe.userID}</td>
+                        <td>${recipe.regdate}</td>
+                    </tr>
+                </c:forEach>
+            </tbody>
+        </table>
     </c:if>
-
-    <hr>
-
-    <!-- 레시피 목록으로 이동 -->
-    <div>
-        <button onclick="location.href='${pageContext.request.contextPath}/recipe/list.do'">레시피 목록 보기</button>
+    <!-- "레시피 전체 보기" 버튼 -->
+    <div class="action-buttons">
+        <button onclick="location.href='${pageContext.request.contextPath}/recipe/list.do'">레시피 전체 보기</button>
     </div>
 </div>
-<footer>
-    <p>&copy; 2024 POST EAT</p>
-</footer>
+
 </body>
 </html>
-
+ 

@@ -225,6 +225,34 @@ public class RecipeDAO {
         }
         return recipes;
     }
+    
+    
+    public Recipe getRecipeDetail(int recipeID) {
+        Recipe recipe = null;
+        String sql = "SELECT *, (SELECT COUNT(*) FROM recommendations WHERE recipeID = ?) AS likes FROM recipe WHERE recipeID = ?";
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, recipeID);
+            pstmt.setInt(2, recipeID);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    recipe = new Recipe();
+                    recipe.setRecipeID(rs.getInt("recipeID"));
+                    recipe.setTitle(rs.getString("title"));
+                    recipe.setDescription(rs.getString("description"));
+                    recipe.setUserID(rs.getString("userID"));
+                    recipe.setRegdate(rs.getTimestamp("regdate").toLocalDateTime());
+                    recipe.setLikes(rs.getInt("likes")); // 좋아요 수 설정
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return recipe;
+    }
+
+
+
 
 
 

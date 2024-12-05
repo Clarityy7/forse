@@ -14,4 +14,9 @@ public class Recipe {
 	private String imagePath;
 	private String userID;
 	private LocalDateTime regdate;
+    private int likes;
+	
+	public void setRegdate(LocalDateTime regdate) {
+        this.regdate = regdate;
+    }
 }

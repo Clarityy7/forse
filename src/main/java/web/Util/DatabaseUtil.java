@@ -3,8 +3,12 @@ package web.Util;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.ResultSet;
+import java.sql.PreparedStatement;
+import java.sql.Connection;
 import java.util.Properties;
 import java.io.InputStream;
+
 
 // db 연결 부분 처리하는 클래스
 public class DatabaseUtil {
@@ -30,9 +34,36 @@ public class DatabaseUtil {
             // 예외 처리
         }
     }
-
+    
+    
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
     }
+    
+    //추가
+    public static void close(ResultSet rs, PreparedStatement pstmt, Connection conn) {
+        if (rs != null) {
+            try {
+                rs.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        if (pstmt != null) {
+            try {
+                pstmt.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        if (conn != null) {
+            try {
+                conn.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }
 
