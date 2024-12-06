@@ -5,6 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/webcss/style.css">
 </head>
 <body>
 <form action="${pageContext.request.contextPath}/recipe/update.do" method="post">

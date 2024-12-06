@@ -6,6 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <title>로그인 화면</title>
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/webcss/style.css">
 </head>
 <body>
 <div align="center">
@@ -13,12 +14,10 @@
    <form action="${pageContext.request.contextPath}/posteat/login.do" method="post">
    	   <c:if test="${errors.mismatch}"><p style="color: red;">암호가 일치하지 않습니다.</p></c:if> <p>	
    	   
-	   <label for="id">ID:</label>
-	   <input type="text" id="id" name="id" required>
+       <input type="text" name="id" placeholder="아이디" value="${param.id}" required> 
 	   <c:if test="${errors.email }">아이디를 입력하세요.</c:if> <p>
 	   
-	   <label for="password">Password:</label>
-	   <input type="password" name="password" required>
+	   <input type="password" name="password" placeholder="비밀번호" required> <p>
 	   <c:if test="${errors.password }">비밀번호를 입력하세요.</c:if> <p>
 	   
 	   <button type="submit">로그인</button>
