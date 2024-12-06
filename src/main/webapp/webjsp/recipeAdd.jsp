@@ -29,7 +29,7 @@
           >${param.description}</textarea>
         </div>
         <input type="submit" value="등록" class="submit-btn" />
-        <input type="submit" value="취소" class="submit-btn" />
+        <input type="button" value="취소" class="submit-btn" onclick="history.back();" />
       </fieldset>
 </form>
 </div>
