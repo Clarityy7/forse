@@ -32,7 +32,7 @@
         <input type="checkbox" id="agreeTerms" name="agreeTerms" required> 약관에 동의합니다.<br>
 
          <button type="submit">회원가입</button>
-         <input type="button" name="register" value="취소"><p>
+         <input type="button" name="register" value="취소" onclick="history.back();"><p>
    </form>
 </div>
 </body>
