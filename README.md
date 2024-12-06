@@ -108,7 +108,7 @@ CREATE TABLE comment (
     userID VARCHAR(50) NOT NULL,
     content TEXT NOT NULL,
     regdate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (recipeID) REFERENCES recipe(recipeID),
+    FOREIGN KEY (recipeID) REFERENCES recipe(recipeID) ON DELETE CASCADE,
     FOREIGN KEY (userID) REFERENCES user(id)
 );
 
@@ -117,7 +117,7 @@ CREATE TABLE recipe_recommendation (
     userID VARCHAR(50) NOT NULL,
     recommendDate DATETIME DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (recipeID, userID),
-    FOREIGN KEY (recipeID) REFERENCES recipe(recipeID),
+    FOREIGN KEY (recipeID) REFERENCES recipe(recipeID) ON DELETE CASCADE,
     FOREIGN KEY (userID) REFERENCES user(id)
 );
 ```
